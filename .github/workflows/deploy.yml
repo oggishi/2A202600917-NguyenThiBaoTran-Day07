@@ -10,6 +10,9 @@ concurrency:
   group: pages-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true   # ← opt-in Node 24 runtime for all actions
+
 jobs:
   # ───────────────────────────────────────────────
   # Job 1: Test & Build
@@ -20,12 +23,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.2.2          # Node 24-compatible
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4.4.0        # Node 24-compatible
+        uses: actions/setup-node@v4
         with:
-          node-version: "24"                    # ← upgraded from 20
+          node-version: "20"
           cache: "npm"
           cache-dependency-path: rag-ui/package.json
 
