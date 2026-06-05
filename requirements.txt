@@ -1,15 +1,20 @@
 pytest>=7.0
 python-dotenv>=1.0
 
-# Optional manual-demo extras
-# Install local embedder support with:
-#   pip install sentence-transformers
-# Install OpenAI embedder support with:
-#   pip install openai
-# Install both optional embedders with:
-#   pip install openai sentence-transformers
-# sentence-transformers>=3.0
+# ===== OPTIONAL DEPENDENCIES FOR IMPROVEMENTS =====
+
+# Recommended: For semantic embeddings (replaces MockEmbedder)
+# Install with: pip install sentence-transformers
+# Provides: Better semantic understanding for retrieval
+# Models: all-MiniLM-L6-v2 (22 MB, fast), all-mpnet-base-v2 (438 MB, better quality)
+sentence-transformers>=3.0
+
+# Optional: For OpenAI embeddings API
+# Install with: pip install openai
+# Requires: OpenAI API key
 # openai>=1.0
 
-# Optional: for bonus tasks
-# chromadb>=0.4.0      # Real vector database integration
+# Optional: For real vector database (ChromaDB)
+# Install with: pip install chromadb
+# Provides: Persistent storage, better scaling
+# chromadb>=0.4.0
