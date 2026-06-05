@@ -22,18 +22,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Create deploy directory
-        run: |
-          mkdir -p deploy
-          cp public/index.html deploy/
-          cp -r data deploy/ 2>/dev/null || true
-          cp -r docs deploy/ 2>/dev/null || true
-          cp README.md deploy/ 2>/dev/null || true
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build React app
+        run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: deploy
+          path: build
 
   # ───────────────────────────────────────────────
   # Job 2: Deploy (push to main only)
