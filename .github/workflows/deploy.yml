@@ -6,27 +6,26 @@ on:
   pull_request:
     branches: [main]
 
-# Allow only one concurrent deployment
 concurrency:
   group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  # ─────────────────────────────────────────────────────────────────────────────
+  # ───────────────────────────────────────────────
   # Job 1: Test & Build
-  # ─────────────────────────────────────────────────────────────────────────────
+  # ───────────────────────────────────────────────
   build:
     name: Test & Build
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2          # Node 24-compatible
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.4.0        # Node 24-compatible
         with:
-          node-version: "20"
+          node-version: "24"                    # ← upgraded from 20
           cache: "npm"
           cache-dependency-path: rag-ui/package.json
 
@@ -38,17 +37,17 @@ jobs:
         working-directory: rag-ui
         run: npm run build
         env:
-          CI: false                       # prevent treating warnings as errors
-          GENERATE_SOURCEMAP: false       # smaller build
+          CI: false
+          GENERATE_SOURCEMAP: false
 
       - name: Upload build artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: rag-ui/build
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # Job 2: Deploy (only on push to main)
-  # ─────────────────────────────────────────────────────────────────────────────
+  # ───────────────────────────────────────────────
+  # Job 2: Deploy (push to main only)
+  # ───────────────────────────────────────────────
   deploy:
     name: Deploy to GitHub Pages
     needs: build
