@@ -10,6 +10,9 @@ concurrency:
   group: pages-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   # ───────────────────────────────────────────────
   # Job 1: Test & Build
@@ -20,23 +23,27 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4        # v5 không tồn tại — dùng v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
-        run: npm install
+        run: npm install                 # package.json ở root
 
       - name: Build React app
         run: npm run build
+        env:
+          CI: false
+          GENERATE_SOURCEMAP: false
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v3   # v4 chưa stable — dùng v3
         with:
-          path: build
+          path: build                    # React build output ở root/build
 
   # ───────────────────────────────────────────────
   # Job 2: Deploy (push to main only)
@@ -46,7 +53,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-
 
     permissions:
       pages: write
@@ -59,4 +65,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@v4
