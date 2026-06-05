@@ -25,26 +25,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-          cache: "npm"
-          cache-dependency-path: package.json
+      - name: Create deploy directory
+        run: |
+          mkdir -p deploy
+          cp index.html deploy/
+          cp -r data deploy/ 2>/dev/null || true
+          cp -r docs deploy/ 2>/dev/null || true
+          cp README.md deploy/ 2>/dev/null || true
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build React app
-        run: npm run build
-        env:
-          CI: false
-          GENERATE_SOURCEMAP: false
-
-      - name: Upload build artifact
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: build
+          path: deploy
 
   # ───────────────────────────────────────────────
   # Job 2: Deploy (push to main only)
